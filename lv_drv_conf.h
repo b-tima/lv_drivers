@@ -7,19 +7,20 @@
  * COPY THIS FILE AS lv_drv_conf.h
  */
 
-#if 0 /*Set it to "1" to enable the content*/
+#if 1 /*Set it to "1" to enable the content*/
 
 #ifndef LV_DRV_CONF_H
 #define LV_DRV_CONF_H
 
+#include "hw_interface.h"
 #include "lv_conf.h"
 
 /*********************
  * DELAY INTERFACE
  *********************/
 #define LV_DRV_DELAY_INCLUDE  <stdint.h>            /*Dummy include by default*/
-#define LV_DRV_DELAY_US(us)  /*delay_us(us)*/       /*Delay the given number of microseconds*/
-#define LV_DRV_DELAY_MS(ms)  /*delay_ms(ms)*/       /*Delay the given number of milliseconds*/
+#define LV_DRV_DELAY_US(us)  delay_us(us)       /*Delay the given number of microseconds*/
+#define LV_DRV_DELAY_MS(ms)  delay_ms(ms)       /*Delay the given number of milliseconds*/
 
 /*********************
  * DISPLAY INTERFACE
@@ -29,15 +30,15 @@
  *  Common
  *------------*/
 #define LV_DRV_DISP_INCLUDE         <stdint.h>           /*Dummy include by default*/
-#define LV_DRV_DISP_CMD_DATA(val)  /*pin_x_set(val)*/    /*Set the command/data pin to 'val'*/
-#define LV_DRV_DISP_RST(val)       /*pin_x_set(val)*/    /*Set the reset pin to 'val'*/
+#define LV_DRV_DISP_CMD_DATA(val)  pin_cmd_data_set(val)        /*Set the command/data pin to 'val'*/
+#define LV_DRV_DISP_RST(val)       pin_rst_set(val)    /*Set the reset pin to 'val'*/
 
 /*---------
  *  SPI
  *---------*/
-#define LV_DRV_DISP_SPI_CS(val)          /*spi_cs_set(val)*/     /*Set the SPI's Chip select to 'val'*/
-#define LV_DRV_DISP_SPI_WR_BYTE(data)    /*spi_wr(data)*/        /*Write a byte the SPI bus*/
-#define LV_DRV_DISP_SPI_WR_ARRAY(adr, n) /*spi_wr_mem(adr, n)*/  /*Write 'n' bytes to SPI bus from 'adr'*/
+#define LV_DRV_DISP_SPI_CS(val)          spi_cs_set(val)         /*Set the SPI's Chip select to 'val'*/
+#define LV_DRV_DISP_SPI_WR_BYTE(data)    spi_wr(data)            /*Write a byte the SPI bus*/
+#define LV_DRV_DISP_SPI_WR_ARRAY(adr, n) spi_wr_mem(adr, n)     /*Write 'n' bytes to SPI bus from 'adr'*/
 
 /*------------------
  *  Parallel port
@@ -68,11 +69,11 @@
 /*---------
  *  I2C
  *---------*/
-#define LV_DRV_INDEV_I2C_START              /*i2c_start()*/       /*Make an I2C start*/
-#define LV_DRV_INDEV_I2C_STOP               /*i2c_stop()*/        /*Make an I2C stop*/
-#define LV_DRV_INDEV_I2C_RESTART            /*i2c_restart()*/     /*Make an I2C restart*/
-#define LV_DRV_INDEV_I2C_WR(data)           /*i2c_wr(data)*/      /*Write a byte to the I1C bus*/
-#define LV_DRV_INDEV_I2C_READ(last_read)    0 /*i2c_rd()*/        /*Read a byte from the I2C bud*/
+#define LV_DRV_INDEV_I2C_START              i2c_start()       /*Make an I2C start*/
+#define LV_DRV_INDEV_I2C_STOP               i2c_stop()        /*Make an I2C stop*/
+#define LV_DRV_INDEV_I2C_RESTART            i2c_restart()     /*Make an I2C restart*/
+#define LV_DRV_INDEV_I2C_WR(data)           i2c_wr(data)      /*Write a byte to the I2C bus*/
+#define LV_DRV_INDEV_I2C_READ(last_read)    i2c_rd()        /*Read a byte from the I2C bud*/
 
 
 /*********************
@@ -258,14 +259,14 @@
  *  ILI9341 240X320 TFT LCD
  *------------------------------------------------*/
 #ifndef USE_ILI9341
-#  define USE_ILI9341       0
+#  define USE_ILI9341       1
 #endif
 
 #if USE_ILI9341
 #  define ILI9341_HOR_RES       LV_HOR_RES
 #  define ILI9341_VER_RES       LV_VER_RES
 #  define ILI9341_GAMMA         1
-#  define ILI9341_TEARING       0
+#  define ILI9341_TEARING       1
 #endif  /*USE_ILI9341*/
 
 /*-----------------------------------------
@@ -330,7 +331,7 @@
  *    FT5406EE8
  *-----------------*/
 #ifndef USE_FT5406EE8
-#  define USE_FT5406EE8       0
+#  define USE_FT5406EE8       1
 #endif
 
 #if USE_FT5406EE8

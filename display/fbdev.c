@@ -173,6 +173,10 @@ void fbdev_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * color
     int32_t act_x2 = area->x2 > (int32_t)vinfo.xres - 1 ? (int32_t)vinfo.xres - 1 : area->x2;
     int32_t act_y2 = area->y2 > (int32_t)vinfo.yres - 1 ? (int32_t)vinfo.yres - 1 : area->y2;
 
+    //act_x2 = 2*act_x2;
+    //act_y2 = 2*act_y2;
+
+    //printf("act_x1 = %i, act_y1 = %i, act_x2 = %i, act_y2 = %i\n", act_x1, act_y1, act_x2, act_y2);
 
     lv_coord_t w = (act_x2 - act_x1 + 1);
     long int location = 0;
@@ -194,8 +198,16 @@ void fbdev_flush(lv_disp_drv_t * drv, const lv_area_t * area, lv_color_t * color
         uint16_t * fbp16 = (uint16_t *)fbp;
         int32_t y;
         for(y = act_y1; y <= act_y2; y++) {
-            location = (act_x1 + vinfo.xoffset) + (y + vinfo.yoffset) * finfo.line_length / 2;
-            memcpy(&fbp16[location], (uint32_t *)color_p, (act_x2 - act_x1 + 1) * 2);
+            location = (act_x1 + vinfo.xoffset) + (y + vinfo.yoffset) * finfo.line_length;
+            uint32_t len = (act_x2 - act_x1 + 1) * 2;
+            lv_color_t temp_color_buf[2*len];
+            for(uint32_t i = 0; i < len; i++){
+                lv_color_t color = color_p[i];
+                temp_color_buf[2*i] = color;
+                temp_color_buf[2*i + 1] = color;
+            }
+            memcpy(fbp16 + location, (uint32_t *)temp_color_buf, 2*len);
+            //memcpy(fbp16 + 2*location + 1, (uint32_t *)temp_color_buf, 2*len);
             color_p += w;
         }
     }

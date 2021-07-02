@@ -78,7 +78,7 @@ void ft5406ee8_init(void)
  * @param data store the read data here
  * @return false: because no ore data to be read
  */
-bool ft5406ee8_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
+void ft5406ee8_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 {
     static int16_t x_last;
     static int16_t y_last;
@@ -92,10 +92,8 @@ bool ft5406ee8_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
     }
 
     if(valid == true) {
-        x = (uint32_t)((uint32_t)x * 320) / 2048;
-        y = (uint32_t)((uint32_t)y * 240) / 2048;
-
-
+        //printf("pre_x = %i, pre_y = %i\n", x, y);
+        y = 240 - y;
         x_last = x;
         y_last = y;
     } else {
@@ -106,7 +104,7 @@ bool ft5406ee8_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
     data->point.x = x;
     data->point.y = y;
     data->state = valid == false ? LV_INDEV_STATE_REL : LV_INDEV_STATE_PR;
-    return false;
+    printf("Reading valid = %i, x = %i, y = %i\n", data->state, data->point.x, data->point.y);
 }
 
 /**********************
@@ -119,10 +117,10 @@ static bool ft5406ee8_get_touch_num(void)
     uint8_t t_num = 0;
 
     LV_DRV_INDEV_I2C_START;
-    LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_WR_BIT);
-    LV_DRV_INDEV_I2C_WR(FT5406EE8_REG_TD_STATUS)
+    //LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_WR_BIT);
+    LV_DRV_INDEV_I2C_WR(FT5406EE8_REG_TD_STATUS);
     LV_DRV_INDEV_I2C_RESTART;
-    LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_RD_BIT);
+    //LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_RD_BIT);
     t_num = LV_DRV_INDEV_I2C_READ(0);
 
     /* Error if not touched or too much finger */
@@ -148,10 +146,10 @@ static bool ft5406ee8_read_finger1(int16_t * x, int16_t * y)
 
     /*Read Y High and low byte*/
     LV_DRV_INDEV_I2C_START;
-    LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_WR_BIT);
-    LV_DRV_INDEV_I2C_WR(FT5406EE8_REG_YH)
+    //LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_WR_BIT);
+    LV_DRV_INDEV_I2C_WR(FT5406EE8_REG_YH);
     LV_DRV_INDEV_I2C_RESTART;
-    LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_RD_BIT);
+    //LV_DRV_INDEV_I2C_WR((FT5406EE8_I2C_ADR << 1) | I2C_RD_BIT);
     temp_yH = LV_DRV_INDEV_I2C_READ(1);
     temp_yL = LV_DRV_INDEV_I2C_READ(1);
 

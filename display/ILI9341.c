@@ -15,7 +15,7 @@
  *      INCLUDES
  *********************/
 #include "ILI9341.h"
-#if USE_ILI9341 != 0
+#if 1
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -329,6 +329,10 @@ void ili9341_init(void)
     ili9341_write(ILI9341_CMD_MODE, ILI9341_DISPON);
 
     LV_DRV_DELAY_MS(20);
+
+    ili9341_rotate(270, true);
+
+    //ili9341_write(ILI9341_DATA_MODE, 0x04);
 }
 
 void ili9341_flush(lv_disp_drv_t * drv, const lv_area_t * area, const lv_color_t * color_p)
